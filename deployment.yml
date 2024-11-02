@@ -1,17 +1,23 @@
-# HTML
-# Archive your static HTML project and save it with the build record.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
+# deployment.yml
 trigger:
-- main
+- none  # à la suite de l'autre ?
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'ubuntu-latest'
 
 steps:
-- task: ArchiveFiles@2
+- task: DownloadPipelineArtifact@2
   inputs:
-    rootFolderOrFile: '$(build.sourcesDirectory)'
-    includeRootFolder: false
-- task: PublishBuildArtifacts@1
+    buildType: 'specific'
+    project: '$(System.TeamProjectId)'
+    definition: '2'  
+    artifactName: 'static-html-site'
+    path: '$(Pipeline.Workspace)'
+
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'NomConnexionAzure'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      az storage blob upload-batch -d '$web' -s "$(Pipeline.Workspace)/static-html-site/site-html.zip" --account-name "NomStockage"
