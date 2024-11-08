@@ -40,4 +40,3 @@ steps:
     csmParametersFile: '$(Build.SourcesDirectory)\AzureResourceGroup12\parameters-key-vault.json'
     overrideParameters: '-vaults_AdminMDP_name $(nomKey)'
     deploymentMode: 'Incremental'
-    
