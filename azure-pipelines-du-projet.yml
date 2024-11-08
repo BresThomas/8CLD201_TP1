@@ -13,7 +13,7 @@ variables:
 
 steps:
 
-- task: AzureResourceManagerTemplateDeployment@3
+- task: AzureResourceManagerTemplateDeployment@3 #Validation du build de la key vault
   displayName: 'Validate ARM Template Key-vault'
   inputs:
     deploymentScope: 'Resource Group'
@@ -28,7 +28,7 @@ steps:
     overrideParameters: '-vaults_AdminMDP_name $(nomKey)'
     deploymentMode: 'Validation'
 
-- task: AzureResourceManagerTemplateDeployment@3
+- task: AzureResourceManagerTemplateDeployment@3 #Bulid de la key vault
   displayName: 'Deploy ARM Template Key-Vault'
   inputs:
     deploymentScope: 'Resource Group'
@@ -43,8 +43,8 @@ steps:
     overrideParameters: '-vaults_AdminMDP_name $(nomKey)'
     deploymentMode: 'Incremental'
     
-- task: PowerShell@2
-  displayName: 'Could Init'
+- task: PowerShell@2 #Récupération du fichier cloud Init pour la mettre dans une variable local
+  displayName: 'Cloud Init'
   inputs:
     targetType: 'inline'
     script: |
@@ -57,7 +57,7 @@ steps:
 - script: |
     echo $(CloudInitContent)
 
-- task: AzureKeyVault@2
+- task: AzureKeyVault@2 #Récupération du mot de passe admin de la key vault pour la mettre dans une variable local
   displayName: 'Azure key-vault password'
   inputs:
     azureSubscription: 'Azure subscription 1(1)(564b93c0-8739-4bbe-8f21-bfa2192d4a08)'
@@ -65,10 +65,10 @@ steps:
     SecretsFilter: 'MDP'
     RunAsPreJob: false
 
-- script: | 
+- script: | #Met le mots de passe dans un variable local
       echo New value $(AzureKey.MDP)
 
-- task: AzureResourceManagerTemplateDeployment@3
+- task: AzureResourceManagerTemplateDeployment@3 #Validation du build de la VM scale sets
   displayName: 'Validate ARM Template VM'
   inputs:
     deploymentScope: 'Resource Group'
@@ -83,7 +83,7 @@ steps:
     overrideParameters: '-customData $(CloudInitContent) -adminPassword $(MDP)'
     deploymentMode: 'Validation'
 
-- task: AzureResourceManagerTemplateDeployment@3
+- task: AzureResourceManagerTemplateDeployment@3 #build de la VM scale sets
   displayName: 'Deploy ARM Template VM'
   inputs:
     deploymentScope: 'Resource Group'
