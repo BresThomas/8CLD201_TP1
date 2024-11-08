@@ -1,4 +1,5 @@
-﻿package_upgrade: true
+﻿#cloud-config
+package_upgrade: true
 packages:
   - nginx
 write_files:
@@ -15,5 +16,7 @@ write_files:
         }
       }
 runcmd:
-  - wget -O /var/www/html/index.html https://raw.githubusercontent.com/BresThomas/8CLD201_TP1/main/Cloud-Init.txt
+  # Télécharger le fichier HTML depuis GitHub avec le lien brut
+  - wget -O /var/www/html/index.html https://raw.githubusercontent.com/BresThomas/8CLD201_TP1/main/index.html
+  # Démarrer Nginx
   - service nginx restart
