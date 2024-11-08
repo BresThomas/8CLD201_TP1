@@ -25,7 +25,6 @@ steps:
     overrideParameters: '-vaults_AdminMDP_name $(nomKey)'
     deploymentMode: 'Validation'
 
-
 - task: AzureResourceManagerTemplateDeployment@3
   displayName: 'Deploy ARM Template Key-Vault'
   inputs:
