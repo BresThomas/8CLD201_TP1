@@ -1,19 +1,18 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
-- main
+  branches:
+    include:
+      - main
 
 pool:
-  vmImage: ubuntu-latest
+  name: 'default'
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
 
 - script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+    git rev-parse --is-shallow-repository
+    git fetch --unshallow
+    git rev-parse --is-shallow-repository
+    git remote add azure https://dev.azure.com/CLOUDORGANISATION/8CLD201_TP1/_git/8CLD201_TP1
+    git push azure HEAD:main --force
+    git remote remove azure || exit 0
+  displayName: "Synchroniser GitHub main avec Azure DevOps main"
